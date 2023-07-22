@@ -1,0 +1,1 @@
+java -jar /Users/ruchir/workplace/DistributedSystems/target/DistributedSystems-1.0-SNAPSHOT-jar-with-dependencies.jar $1
