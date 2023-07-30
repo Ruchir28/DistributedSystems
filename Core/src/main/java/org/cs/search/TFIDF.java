@@ -29,13 +29,13 @@ public class TFIDF {
 
     private static double getInverseDocumentFrequency(Map<String,DocumentData> documentDataList, String term) {
         int totalDocuments = documentDataList.size();
-        int documentFrequency = 0;
+        int termInversedocumentFrequency = 0;
         for(DocumentData documentData : documentDataList.values()) {
             if(documentData.getTermFrequency(term) > 0.0) {
-                documentFrequency++;
+                termInversedocumentFrequency++;
             }
         }
-        return documentFrequency == 0 ? 0 : Math.log10(((double)totalDocuments)/documentFrequency);
+        return termInversedocumentFrequency == 0 ? 0 : Math.log10(((double)totalDocuments)/termInversedocumentFrequency);
     }
 
     private static Map<String,Double> getTermToInverseDocumentFrequencyMap(List<String> terms, Map<String,DocumentData> documentData) {

@@ -11,6 +11,11 @@ public class ServiceRegistry implements Watcher{
     public static final String REGISTRY_NODE = "/service_registry";
     private final ZooKeeper zooKeeper;
     private String currentZnode = null;
+
+    public List<String> getAllServiceAddresses() {
+        return allServiceAddresses;
+    }
+
     private List<String> allServiceAddresses = null;
 
     public ServiceRegistry(ZooKeeper zooKeeper) {

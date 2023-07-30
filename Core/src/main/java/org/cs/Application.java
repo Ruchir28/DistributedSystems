@@ -19,7 +19,8 @@ public class Application implements Watcher {
         Application application = new Application();
         ZooKeeper zooKeeper = application.connectToZooKeeper();
         ServiceRegistry serviceRegistry = new ServiceRegistry(zooKeeper);
-        OnElectionCallback onElectionCallback = new OnElectionAction(serviceRegistry, Integer.parseInt(args[0]));
+        ServiceRegistry coordinatorsServiceRegistry = new ServiceRegistry(zooKeeper);
+        OnElectionCallback onElectionCallback = new OnElectionAction(serviceRegistry,coordinatorsServiceRegistry, Integer.parseInt(args[0]));
         LeaderElection leaderElection = new LeaderElection(zooKeeper,onElectionCallback);
         try {
             leaderElection.volunteerForLeaderShip();

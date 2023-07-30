@@ -41,6 +41,10 @@ public class WebServer {
         server.start();
     }
 
+    public void stop() {
+        this.server.stop(1000);
+    }
+
     private void handleTaskRequest(HttpExchange exchange) throws IOException {
         if (!exchange.getRequestMethod().equalsIgnoreCase("post")) {
             exchange.close();

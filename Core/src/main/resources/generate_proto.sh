@@ -1,0 +1,1 @@
+protoc --java_out=src/main/java src/main/java/org/cs/model/proto/search_cluster_proto.proto
