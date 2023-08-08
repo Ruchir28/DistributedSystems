@@ -6,6 +6,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>Core</module>
+        <module>Api</module>
     </modules>
 
     <build>

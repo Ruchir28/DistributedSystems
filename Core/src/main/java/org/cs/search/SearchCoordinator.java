@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public class SearchCoordinator implements OnRequestCallback {
 
     private static final String ENDPOINT = "/search";
-    private static final String BOOKS_DIRECTORY = "./resources/books/";
+    private static final String BOOKS_DIRECTORY = "./books";
     private final ServiceRegistry workersServiceRegistry;
     private final WebClient client;
     private final List<String> documents;
@@ -63,6 +63,7 @@ public class SearchCoordinator implements OnRequestCallback {
         }
         List<Task> tasks = createTasks(workers.size(),searchTerms);
         List<Result> results = sendTasksToWorkers(workers,tasks);
+
         List<SearchModel.Response.DocumentStats> sortedDocuments = aggregateResults(results,searchTerms);
         searchResponse.addAllRelevantDocuments(sortedDocuments);
         return searchResponse.build();
@@ -93,8 +94,9 @@ public class SearchCoordinator implements OnRequestCallback {
         for(String worker: workers) {
             Task task = tasks.get(taskIndex++);
             byte[] serializedTask = SerializationUtils.serialize(task);
-            CompletableFuture<Result> completableFuture = client.sendTask(worker,serializedTask);
-            futures.add(completableFuture);
+            CompletableFuture<byte[]> completableFuture = client.sendTask(worker,serializedTask);
+            CompletableFuture<Result> resultCompletableFuture = completableFuture.thenApply(bytes -> (Result) SerializationUtils.deserialize(bytes));
+            futures.add(resultCompletableFuture);
         }
         List<Result> results = new ArrayList<>();
         for(CompletableFuture<Result> completableFuture: futures) {
@@ -120,6 +122,7 @@ public class SearchCoordinator implements OnRequestCallback {
 
     private static List<String> readDocumentsList() {
         File documentsDirectory = new File(BOOKS_DIRECTORY);
+        System.out.println(documentsDirectory.getAbsolutePath());
         return Arrays.asList(documentsDirectory.list())
                 .stream()
                 .map(documentName -> BOOKS_DIRECTORY + "/" + documentName)

@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class ServiceRegistry implements Watcher{
-    public static final String REGISTRY_NODE = "/service_registry";
+    public String REGISTRY_NODE = "/service_registry";
     private final ZooKeeper zooKeeper;
     private String currentZnode = null;
 
@@ -18,8 +18,9 @@ public class ServiceRegistry implements Watcher{
 
     private List<String> allServiceAddresses = null;
 
-    public ServiceRegistry(ZooKeeper zooKeeper) {
+    public ServiceRegistry(ZooKeeper zooKeeper, String registryNode) {
         this.zooKeeper = zooKeeper;
+        this.REGISTRY_NODE = registryNode;
         createServiceRegistryZNode();
     }
 
