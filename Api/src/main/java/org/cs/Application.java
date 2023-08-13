@@ -20,7 +20,8 @@ public class Application implements Watcher {
         ServiceRegistry coordinatorsServiceRegistry = new ServiceRegistry(zooKeeper,"/coordinators_service_registry");
         WebClient webClient = new WebClient();
         ApiHandlerCallback apiHandlerCallback = new ApiHandlerCallback(coordinatorsServiceRegistry,webClient);
-        WebServer webServer = new WebServer(Integer.parseInt(args[0]),apiHandlerCallback);
+        WebServer webServer = new WebServer(8080,apiHandlerCallback);
+        webServer.startServer();
 
         coordinatorsServiceRegistry.registerForUpdates();
         try {

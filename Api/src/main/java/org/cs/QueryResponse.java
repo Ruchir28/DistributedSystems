@@ -16,12 +16,10 @@ public class QueryResponse {
 
     public static class SearchResultInfo {
         private String title;
-        private String extension;
-        private int score;
+        private double score;
 
-        public SearchResultInfo(String title, String extension, int score) {
+        public SearchResultInfo(String title, double score) {
             this.title = title;
-            this.extension = extension;
             this.score = score;
         }
 
@@ -29,11 +27,7 @@ public class QueryResponse {
             return title;
         }
 
-        public String getExtension() {
-            return extension;
-        }
-
-        public int getScore() {
+        public double getScore() {
             return score;
         }
     }
