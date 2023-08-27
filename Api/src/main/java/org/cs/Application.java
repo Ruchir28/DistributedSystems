@@ -1,12 +1,11 @@
 package org.cs;
 
-import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
-import org.cs.cluster_management.LeaderElection;
-import org.cs.cluster_management.OnElectionCallback;
 import org.cs.cluster_management.ServiceRegistry;
+import org.cs.networking.WebClient;
+import org.cs.networking.WebServer;
 
 import java.io.IOException;
 
@@ -18,21 +17,19 @@ public class Application implements Watcher {
 
         Application application = new Application();
         ZooKeeper zooKeeper = application.connectToZooKeeper();
-        ServiceRegistry serviceRegistry = new ServiceRegistry(zooKeeper,"/worker_registry");
         ServiceRegistry coordinatorsServiceRegistry = new ServiceRegistry(zooKeeper,"/coordinators_service_registry");
-        OnElectionCallback onElectionCallback = new OnElectionAction(serviceRegistry,coordinatorsServiceRegistry, Integer.parseInt(args[0]));
-        LeaderElection leaderElection = new LeaderElection(zooKeeper,onElectionCallback);
-        try {
-            leaderElection.volunteerForLeaderShip();
-            leaderElection.electLeader();
-            leaderElection.watchTargetZnode();
+        WebClient webClient = new WebClient();
+        ApiHandlerCallback apiHandlerCallback = new ApiHandlerCallback(coordinatorsServiceRegistry,webClient);
+        WebServer webServer = new WebServer(8080,apiHandlerCallback);
+        webServer.startServer();
 
+        coordinatorsServiceRegistry.registerForUpdates();
+        try {
             application.run();
             application.close();
-            System.out.println("Disconnected From ZooKeeper !!");
+            webServer.stop();
+            System.out.println("Disconnected From ZooKeeper !!, Webserver Stopped !! Exiting !!");
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } catch (KeeperException e) {
             throw new RuntimeException(e);
         }
     }
